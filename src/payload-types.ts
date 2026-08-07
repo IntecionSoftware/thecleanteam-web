@@ -69,6 +69,11 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    icons: Icon;
+    pages: Page;
+    navigation: Navigation;
+    forms: Form;
+    'form-submissions': FormSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,18 +83,41 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    icons: IconsSelect<false> | IconsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    navigation: NavigationSelect<false> | NavigationSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
+    'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
-  fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
-  locale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('pl' | 'en') | ('pl' | 'en')[];
+  globals: {
+    pricing: Pricing;
+    company: Company;
+    contact: Contact;
+    header: Header;
+    footer: Footer;
+    'site-settings': SiteSetting;
+    'site-integrations': SiteIntegration;
+    'cookie-settings': CookieSetting;
+  };
+  globalsSelect: {
+    pricing: PricingSelect<false> | PricingSelect<true>;
+    company: CompanySelect<false> | CompanySelect<true>;
+    contact: ContactSelect<false> | ContactSelect<true>;
+    header: HeaderSelect<false> | HeaderSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'site-integrations': SiteIntegrationsSelect<false> | SiteIntegrationsSelect<true>;
+    'cookie-settings': CookieSettingsSelect<false> | CookieSettingsSelect<true>;
+  };
+  locale: 'pl' | 'en';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -122,7 +150,11 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
+  /**
+   * Role hierarchy: admin > editor > user.
+   */
+  roles: ('user' | 'editor' | 'admin')[];
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -147,7 +179,7 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -163,10 +195,441 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "icons".
+ */
+export interface Icon {
+  id: number;
+  title: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  /**
+   * Auto-generated from the title when left empty. You can override it.
+   */
+  slug: string;
+  layout?:
+    | (
+        | {
+            heading: string;
+            description?: string | null;
+            image: number | Media;
+            buttons?:
+              | {
+                  label: string;
+                  appearance: 'primary' | 'secondary';
+                  linkType: 'page' | 'anchor';
+                  page?: (number | null) | Page;
+                  /**
+                   * Example: #services
+                   */
+                  anchor?: string | null;
+                  newTab?: boolean | null;
+                  showIcon?: boolean | null;
+                  icon?: (number | null) | Icon;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            heading: string;
+            cards: {
+              image: number | Media;
+              heading: string;
+              description?: string | null;
+              button?:
+                | {
+                    label: string;
+                    appearance: 'primary' | 'secondary';
+                    linkType: 'page' | 'anchor';
+                    page?: (number | null) | Page;
+                    /**
+                     * Example: #services
+                     */
+                    anchor?: string | null;
+                    newTab?: boolean | null;
+                    showIcon?: boolean | null;
+                    icon?: (number | null) | Icon;
+                    id?: string | null;
+                  }[]
+                | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'offer';
+          }
+        | {
+            heading: string;
+            description?: string | null;
+            button?:
+              | {
+                  label: string;
+                  appearance: 'primary' | 'secondary';
+                  linkType: 'page' | 'anchor';
+                  page?: (number | null) | Page;
+                  /**
+                   * Example: #services
+                   */
+                  anchor?: string | null;
+                  newTab?: boolean | null;
+                  showIcon?: boolean | null;
+                  icon?: (number | null) | Icon;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            heading?: string | null;
+            body: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'content';
+          }
+        | {
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pricing';
+          }
+        | {
+            layout: 'left' | 'right';
+            heading: string;
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            image: number | Media;
+            button?:
+              | {
+                  label: string;
+                  appearance: 'primary' | 'secondary';
+                  linkType: 'page' | 'anchor';
+                  page?: (number | null) | Page;
+                  /**
+                   * Example: #services
+                   */
+                  anchor?: string | null;
+                  newTab?: boolean | null;
+                  showIcon?: boolean | null;
+                  icon?: (number | null) | Icon;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'about';
+          }
+        | {
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contact';
+          }
+        | SimpleHero
+        | FullContent
+      )[]
+    | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Use this exact text as the browser-tab title — no site name, no separator. Leave empty to compose the title automatically.
+     */
+    titleOverride?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SimpleHero".
+ */
+export interface SimpleHero {
+  heading: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'simpleHero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FullContent".
+ */
+export interface FullContent {
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'fullContent';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  title: string;
+  /**
+   * Example: main, footer, legal
+   */
+  slug: string;
+  items?:
+    | {
+        page?: (number | null) | Page;
+        /**
+         * Optional. Example: #services
+         */
+        anchor?: string | null;
+        /**
+         * Optional. If empty, the selected page title will be used.
+         */
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: number;
+  title: string;
+  fields?:
+    | (
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            defaultValue?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'checkbox';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'country';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'email';
+          }
+        | {
+            message?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'message';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'number';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            placeholder?: string | null;
+            options?:
+              | {
+                  label: string;
+                  value: string;
+                  id?: string | null;
+                }[]
+              | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'select';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'state';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textarea';
+          }
+      )[]
+    | null;
+  submitButtonLabel?: string | null;
+  confirmationType?: ('message' | 'redirect') | null;
+  confirmationMessage?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  redirect?: {
+    type?: ('reference' | 'custom') | null;
+    reference?: {
+      relationTo: 'pages';
+      value: number | Page;
+    } | null;
+    url?: string | null;
+  };
+  emails?:
+    | {
+        emailTo?: string | null;
+        cc?: string | null;
+        bcc?: string | null;
+        replyTo?: string | null;
+        emailFrom?: string | null;
+        subject: string;
+        message?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions".
+ */
+export interface FormSubmission {
+  id: number;
+  form: number | Form;
+  submissionData?:
+    | {
+        field: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -183,20 +646,40 @@ export interface PayloadKv {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'icons';
+        value: number | Icon;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'navigation';
+        value: number | Navigation;
+      } | null)
+    | ({
+        relationTo: 'forms';
+        value: number | Form;
+      } | null)
+    | ({
+        relationTo: 'form-submissions';
+        value: number | FormSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -206,10 +689,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -229,7 +712,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -240,6 +723,7 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  roles?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -274,6 +758,349 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "icons_select".
+ */
+export interface IconsSelect<T extends boolean = true> {
+  title?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  layout?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              image?: T;
+              buttons?:
+                | T
+                | {
+                    label?: T;
+                    appearance?: T;
+                    linkType?: T;
+                    page?: T;
+                    anchor?: T;
+                    newTab?: T;
+                    showIcon?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        offer?:
+          | T
+          | {
+              heading?: T;
+              cards?:
+                | T
+                | {
+                    image?: T;
+                    heading?: T;
+                    description?: T;
+                    button?:
+                      | T
+                      | {
+                          label?: T;
+                          appearance?: T;
+                          linkType?: T;
+                          page?: T;
+                          anchor?: T;
+                          newTab?: T;
+                          showIcon?: T;
+                          icon?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              button?:
+                | T
+                | {
+                    label?: T;
+                    appearance?: T;
+                    linkType?: T;
+                    page?: T;
+                    anchor?: T;
+                    newTab?: T;
+                    showIcon?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        content?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pricing?:
+          | T
+          | {
+              id?: T;
+              blockName?: T;
+            };
+        about?:
+          | T
+          | {
+              layout?: T;
+              heading?: T;
+              content?: T;
+              image?: T;
+              button?:
+                | T
+                | {
+                    label?: T;
+                    appearance?: T;
+                    linkType?: T;
+                    page?: T;
+                    anchor?: T;
+                    newTab?: T;
+                    showIcon?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        contact?:
+          | T
+          | {
+              id?: T;
+              blockName?: T;
+            };
+        simpleHero?: T | SimpleHeroSelect<T>;
+        fullContent?: T | FullContentSelect<T>;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        titleOverride?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SimpleHero_select".
+ */
+export interface SimpleHeroSelect<T extends boolean = true> {
+  heading?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FullContent_select".
+ */
+export interface FullContentSelect<T extends boolean = true> {
+  content?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  items?:
+    | T
+    | {
+        page?: T;
+        anchor?: T;
+        label?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms_select".
+ */
+export interface FormsSelect<T extends boolean = true> {
+  title?: T;
+  fields?:
+    | T
+    | {
+        checkbox?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              defaultValue?: T;
+              id?: T;
+              blockName?: T;
+            };
+        country?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        email?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        message?:
+          | T
+          | {
+              message?: T;
+              id?: T;
+              blockName?: T;
+            };
+        number?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        select?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              placeholder?: T;
+              options?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    id?: T;
+                  };
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        state?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        text?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        textarea?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  submitButtonLabel?: T;
+  confirmationType?: T;
+  confirmationMessage?: T;
+  redirect?:
+    | T
+    | {
+        type?: T;
+        reference?: T;
+        url?: T;
+      };
+  emails?:
+    | T
+    | {
+        emailTo?: T;
+        cc?: T;
+        bcc?: T;
+        replyTo?: T;
+        emailFrom?: T;
+        subject?: T;
+        message?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions_select".
+ */
+export interface FormSubmissionsSelect<T extends boolean = true> {
+  form?: T;
+  submissionData?:
+    | T
+    | {
+        field?: T;
+        value?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -314,6 +1141,489 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pricing".
+ */
+export interface Pricing {
+  id: number;
+  heading: string;
+  button?:
+    | {
+        label: string;
+        appearance: 'primary' | 'secondary';
+        linkType: 'page' | 'anchor';
+        page?: (number | null) | Page;
+        /**
+         * Example: #services
+         */
+        anchor?: string | null;
+        newTab?: boolean | null;
+        showIcon?: boolean | null;
+        icon?: (number | null) | Icon;
+        id?: string | null;
+      }[]
+    | null;
+  moreLink: {
+    label: string;
+    page: number | Page;
+  };
+  services: {
+    label: string;
+    pricings: {
+      label: string;
+      packages: {
+        weekly: {
+          heading: string;
+          price: number;
+        };
+        biweekly: {
+          heading: string;
+          price: number;
+        };
+        oneTime: {
+          heading: string;
+          price: number;
+        };
+      };
+      id?: string | null;
+    }[];
+    id?: string | null;
+  }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "company".
+ */
+export interface Company {
+  id: number;
+  phone: {
+    value: string;
+    icon: number | Icon;
+  };
+  email: {
+    value: string;
+    icon: number | Icon;
+  };
+  address: {
+    value: string;
+    link?: string | null;
+    icon: number | Icon;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact".
+ */
+export interface Contact {
+  id: number;
+  headingLeft: string;
+  description: string;
+  contactDetails: ('phone' | 'email' | 'address')[];
+  headingRight: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header".
+ */
+export interface Header {
+  id: number;
+  navigation: number | Navigation;
+  button?:
+    | {
+        label: string;
+        appearance: 'primary' | 'secondary';
+        linkType: 'page' | 'anchor';
+        page?: (number | null) | Page;
+        /**
+         * Example: #services
+         */
+        anchor?: string | null;
+        newTab?: boolean | null;
+        showIcon?: boolean | null;
+        icon?: (number | null) | Icon;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  navigation: number | Navigation;
+  contactDetails: ('phone' | 'email' | 'address')[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  /**
+   * Used in page titles and Open Graph metadata.
+   */
+  siteName: string;
+  /**
+   * Which comes first in browser tabs.
+   */
+  titleOrder?: ('page-first' | 'site-first') | null;
+  /**
+   * Separates the page title from the site name in browser tabs.
+   */
+  titleSeparator?: ('|' | '–' | '-' | '·' | '/') | null;
+  /**
+   * Primary site logo.
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Fallback Open Graph image when a page has none.
+   */
+  defaultShareImage?: (number | null) | Media;
+  /**
+   * Square source icon (PNG or SVG) for the browser tab. Rendered by the frontend.
+   */
+  favicon?: (number | null) | Media;
+  /**
+   * Theme applied on a visitor’s first visit.
+   */
+  defaultTheme: 'light' | 'dark';
+  /**
+   * Show a light/dark switch on the site.
+   */
+  allowThemeToggle?: boolean | null;
+  /**
+   * Page served at the locale root (e.g. /pl, /en).
+   */
+  homepage?: (number | null) | Page;
+  /**
+   * Page linked as the privacy policy.
+   */
+  privacyPolicy?: (number | null) | Page;
+  /**
+   * Page linked from the cookie consent banner.
+   */
+  cookiePolicy?: (number | null) | Page;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-integrations".
+ */
+export interface SiteIntegration {
+  id: number;
+  /**
+   * Google Analytics 4 Measurement ID.
+   */
+  ga4MeasurementId?: string | null;
+  /**
+   * Google Tag Manager container ID.
+   */
+  gtmContainerId?: string | null;
+  /**
+   * Public site key rendered in the Turnstile widget.
+   */
+  turnstileSiteKey?: string | null;
+  /**
+   * Secret key used for server-side verification.
+   */
+  turnstileSecretKey?: string | null;
+  smtpHost?: string | null;
+  smtpPort?: number | null;
+  /**
+   * SMTP account username.
+   */
+  smtpUser?: string | null;
+  /**
+   * SMTP account password.
+   */
+  smtpPassword?: string | null;
+  /**
+   * Default "from" address for outgoing mail.
+   */
+  smtpFromAddress?: string | null;
+  /**
+   * Default "from" display name.
+   */
+  smtpFromName?: string | null;
+  /**
+   * R2 bucket name.
+   */
+  r2Bucket?: string | null;
+  /**
+   * R2 S3-compatible endpoint URL.
+   */
+  r2Endpoint?: string | null;
+  /**
+   * R2 access key ID.
+   */
+  r2AccessKeyId?: string | null;
+  /**
+   * R2 secret access key.
+   */
+  r2SecretAccessKey?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cookie-settings".
+ */
+export interface CookieSetting {
+  id: number;
+  /**
+   * Main consent message shown in the banner.
+   */
+  message?: string | null;
+  /**
+   * Heading for the detailed settings panel.
+   */
+  settingsTitle?: string | null;
+  /**
+   * Button labels.
+   */
+  buttons?: {
+    acceptAll?: string | null;
+    reject?: string | null;
+    settings?: string | null;
+    save?: string | null;
+    back?: string | null;
+  };
+  /**
+   * Per-category titles and descriptions.
+   */
+  categories?:
+    | {
+        key: 'necessary' | 'functional' | 'analytics' | 'marketing';
+        title?: string | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pricing_select".
+ */
+export interface PricingSelect<T extends boolean = true> {
+  heading?: T;
+  button?:
+    | T
+    | {
+        label?: T;
+        appearance?: T;
+        linkType?: T;
+        page?: T;
+        anchor?: T;
+        newTab?: T;
+        showIcon?: T;
+        icon?: T;
+        id?: T;
+      };
+  moreLink?:
+    | T
+    | {
+        label?: T;
+        page?: T;
+      };
+  services?:
+    | T
+    | {
+        label?: T;
+        pricings?:
+          | T
+          | {
+              label?: T;
+              packages?:
+                | T
+                | {
+                    weekly?:
+                      | T
+                      | {
+                          heading?: T;
+                          price?: T;
+                        };
+                    biweekly?:
+                      | T
+                      | {
+                          heading?: T;
+                          price?: T;
+                        };
+                    oneTime?:
+                      | T
+                      | {
+                          heading?: T;
+                          price?: T;
+                        };
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "company_select".
+ */
+export interface CompanySelect<T extends boolean = true> {
+  phone?:
+    | T
+    | {
+        value?: T;
+        icon?: T;
+      };
+  email?:
+    | T
+    | {
+        value?: T;
+        icon?: T;
+      };
+  address?:
+    | T
+    | {
+        value?: T;
+        link?: T;
+        icon?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact_select".
+ */
+export interface ContactSelect<T extends boolean = true> {
+  headingLeft?: T;
+  description?: T;
+  contactDetails?: T;
+  headingRight?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  navigation?: T;
+  button?:
+    | T
+    | {
+        label?: T;
+        appearance?: T;
+        linkType?: T;
+        page?: T;
+        anchor?: T;
+        newTab?: T;
+        showIcon?: T;
+        icon?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  navigation?: T;
+  contactDetails?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  siteName?: T;
+  titleOrder?: T;
+  titleSeparator?: T;
+  logo?: T;
+  defaultShareImage?: T;
+  favicon?: T;
+  defaultTheme?: T;
+  allowThemeToggle?: T;
+  homepage?: T;
+  privacyPolicy?: T;
+  cookiePolicy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-integrations_select".
+ */
+export interface SiteIntegrationsSelect<T extends boolean = true> {
+  ga4MeasurementId?: T;
+  gtmContainerId?: T;
+  turnstileSiteKey?: T;
+  turnstileSecretKey?: T;
+  smtpHost?: T;
+  smtpPort?: T;
+  smtpUser?: T;
+  smtpPassword?: T;
+  smtpFromAddress?: T;
+  smtpFromName?: T;
+  r2Bucket?: T;
+  r2Endpoint?: T;
+  r2AccessKeyId?: T;
+  r2SecretAccessKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cookie-settings_select".
+ */
+export interface CookieSettingsSelect<T extends boolean = true> {
+  message?: T;
+  settingsTitle?: T;
+  buttons?:
+    | T
+    | {
+        acceptAll?: T;
+        reject?: T;
+        settings?: T;
+        save?: T;
+        back?: T;
+      };
+  categories?:
+    | T
+    | {
+        key?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

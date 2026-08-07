@@ -1,0 +1,1 @@
+export { linkField } from './config'
