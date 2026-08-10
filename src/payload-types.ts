@@ -1249,6 +1249,7 @@ export interface Contact {
   description: string;
   contactDetails: ('phone' | 'email' | 'address')[];
   headingRight: string;
+  form: number | Form;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1539,6 +1540,7 @@ export interface ContactSelect<T extends boolean = true> {
   description?: T;
   contactDetails?: T;
   headingRight?: T;
+  form?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

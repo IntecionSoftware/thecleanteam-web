@@ -1,5 +1,6 @@
 /* src/app/(frontend)/styles.css — na górze */
 @import 'tailwindcss';
+@import 'glightbox/dist/css/glightbox.css';
 @source "../../../node_modules/ipal-kit/dist/**/*.js";
 
 @theme {
@@ -484,8 +485,8 @@ main {
   /* Formularz kontaktowy */
 
   .form {
-    @apply mt-10 flex flex-col gap-8;
-  }
+  @apply mt-10 flex flex-wrap gap-8;
+}
 
   .form-group {
     @apply relative;
@@ -517,8 +518,8 @@ main {
   }
 
   .form-bottom {
-    @apply flex flex-col gap-8;
-  }
+  @apply flex w-full flex-col gap-8;
+}
 
   .checkbox {
     @apply flex cursor-pointer items-start gap-3;
@@ -535,6 +536,14 @@ main {
   .form .button-primary {
     @apply self-start;
   }
+
+  .form-success {
+  @apply mt-10 border border-primary bg-white p-6 text-dark;
+}
+
+.form-error {
+  @apply mt-6 border border-red-500 bg-red-50 p-4 text-red-700;
+}
 }
 
 /* Sekcja galeria */

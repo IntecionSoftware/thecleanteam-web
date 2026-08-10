@@ -1,6 +1,8 @@
 import { cache } from 'react'
 import { getPayload } from 'payload'
 
+import { getSiteIntegrations } from '@intecion/ipal-kit'
+
 import config from '@/payload.config'
 
 export const getCachedPayload = cache(async () =>
@@ -44,3 +46,11 @@ export const getFooter = cache(async (locale: string) =>
     depth: 2,
   }),
 )
+
+export const getTurnstileSiteKey = cache(async () => {
+  const payload = await getCachedPayload()
+
+  const { turnstileSiteKey } = await getSiteIntegrations(payload)
+
+  return turnstileSiteKey
+})

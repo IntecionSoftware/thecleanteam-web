@@ -53,5 +53,12 @@ export const Contact: GlobalConfig = {
       localized: true,
       required: true,
     },
+    {
+      name: 'form',
+      label: 'Form',
+      type: 'relationship',
+      relationTo: 'forms',
+      required: true,
+    },
   ],
 }

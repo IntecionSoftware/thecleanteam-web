@@ -1,6 +1,8 @@
 import config from '@payload-config'
 import { getPayload } from 'payload'
 
+import { getTurnstileSiteKey } from '@/lib/payload'
+
 import { ContactClient } from './Client'
 
 export const Contact = async () => {
@@ -8,18 +10,23 @@ export const Contact = async () => {
     config,
   })
 
-  const company = await payload.findGlobal({
-    slug: 'company',
-  })
-
-  const contact = await payload.findGlobal({
-    slug: 'contact',
-  })
+  const [company, contact, turnstileSiteKey] = await Promise.all([
+    payload.findGlobal({
+      slug: 'company',
+      depth: 2,
+    }),
+    payload.findGlobal({
+      slug: 'contact',
+      depth: 2,
+    }),
+    getTurnstileSiteKey(),
+  ])
 
   return (
     <ContactClient
       company={company}
       contact={contact}
+      turnstileSiteKey={turnstileSiteKey}
     />
   )
 }

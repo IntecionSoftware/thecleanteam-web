@@ -2,14 +2,18 @@ import Link from 'next/link'
 
 import { Icon } from '@/components/Icon/Icon'
 import { RichText } from '@/components/RichText'
-import type { Company, Contact, Icon as IconType } from '@/payload-types'
+import type { Company, Contact, Form, Icon as IconType } from '@/payload-types'
+import { FormRenderer } from '@/components/Form'
 
 type Props = {
   company: Company
   contact: Contact
+  turnstileSiteKey?: string | null
 }
 
-export const ContactClient = ({ company, contact }: Props) => {
+export const ContactClient = ({ company, contact, turnstileSiteKey }: Props) => {
+  const form = typeof contact.form === 'object' ? (contact.form as Form) : null
+
   return (
     <section id="contact" className="bg-white">
       <div className="site-container contact-grid">
@@ -62,7 +66,7 @@ export const ContactClient = ({ company, contact }: Props) => {
         <div className="contact-content">
           <h2 className="headline-h2">{contact.headingRight}</h2>
 
-          {/* TODO: Formularz */}
+          {form && <FormRenderer form={form} turnstileSiteKey={turnstileSiteKey} />}
         </div>
       </div>
     </section>
