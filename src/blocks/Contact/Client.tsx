@@ -1,9 +1,15 @@
+'use client'
+
 import Link from 'next/link'
 
 import { Icon } from '@/components/Icon/Icon'
 import { RichText } from '@/components/RichText'
 import type { Company, Contact, Form, Icon as IconType } from '@/payload-types'
-import { FormRenderer } from '@/components/Form'
+import dynamic from 'next/dynamic'
+
+const FormRenderer = dynamic(
+  () => import('@/components/Form').then((mod) => mod.FormRenderer),
+)
 
 type Props = {
   company: Company
