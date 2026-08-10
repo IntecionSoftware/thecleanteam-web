@@ -4,9 +4,11 @@ import { RichText } from '@/components/RichText'
 import { LinkButton } from '@/components/LinkButton/LinkButton'
 import type { AboutBlock as AboutBlockType, Media } from '@/payload-types'
 
-type Props = AboutBlockType
+type Props = AboutBlockType & {
+  locale?: string
+}
 
-export const About = ({ layout, heading, content, image, button }: Props) => {
+export const About = ({ layout, heading, content, image, button, locale }: Props) => {
   const media = image as Media | null
 
   return (
@@ -19,7 +21,7 @@ export const About = ({ layout, heading, content, image, button }: Props) => {
 
           <RichText data={content} className="rich-text mt-10" />
 
-          {button?.[0] && <LinkButton {...button[0]} appearance="secondary" />}
+          {button?.[0] && <LinkButton {...button[0]} appearance="secondary" locale={locale} />}
         </div>
 
         <figure className="about-image">

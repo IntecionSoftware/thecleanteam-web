@@ -3,7 +3,12 @@
 import { notFound } from 'next/navigation'
 
 import { getAnalyticsConfig, getConsentTexts } from '@intecion/ipal-kit'
-import { Analytics } from '@intecion/ipal-kit/client'
+import {
+  Analytics,
+  ConsentProvider,
+  CookieBanner,
+  CookieButton,
+} from '@intecion/ipal-kit/client'
 
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
@@ -38,15 +43,15 @@ export default async function LocaleLayout({
   const payload = await getCachedPayload()
 
   const [settings, header, footer, company] = await Promise.all([
-  getSettings(locale),
-  getHeader(),
-  getFooter(),
-  getCompany(),
-])
+    getSettings(locale),
+    getHeader(locale),
+    getFooter(locale),
+    getCompany(),
+  ])
 
   const privacyPage = (settings as { privacyPolicy?: unknown }).privacyPolicy
 
-  await Promise.all([
+  const [texts, analytics] = await Promise.all([
     getConsentTexts({
       config: i18nConfig,
       locale,
@@ -62,26 +67,32 @@ export default async function LocaleLayout({
     getAnalyticsConfig(payload),
   ])
 
-  const analytics = await getAnalyticsConfig(payload)
-
   return (
-    <body className={`${libreFranklin.variable} ${signika.variable}`}>
-      <Header
-        header={header}
-        settings={settings}
-        locale={locale}
-      />
+    <html lang={locale}>
+      <body className={`${libreFranklin.variable} ${signika.variable}`}>
+        <ConsentProvider texts={texts}>
+          <Header
+            header={header}
+            settings={settings}
+            locale={locale}
+            company={company}
+          />
 
-      {children}
+          <main>{children}</main>
 
-      <Footer
-    footer={footer}
-    settings={settings}
-    company={company}
-  />
+          <Footer
+            footer={footer}
+            settings={settings}
+            locale={locale}
+            company={company}
+          />
 
-      <Analytics {...analytics} />
-    </body>
+          <CookieBanner />
+          <CookieButton />
+          <Analytics {...analytics} />
+        </ConsentProvider>
+      </body>
+    </html>
   )
 }
 

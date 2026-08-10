@@ -14,10 +14,11 @@ export const linkField = ({ name, label = 'Buttons', maxRows }: LinkFieldOptions
 
   fields: [
     {
-      name: 'label',
-      type: 'text',
-      required: true,
-    },
+  name: 'label',
+  type: 'text',
+  localized: true,
+  required: true,
+},
 
     {
       name: 'appearance',

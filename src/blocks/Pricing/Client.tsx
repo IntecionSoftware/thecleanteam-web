@@ -12,7 +12,8 @@ export const PricingClient = ({
   button,
   moreLink,
   services = [],
-}: PricingGlobal) => {
+  locale,
+}: PricingGlobal & { locale?: string }) => {
   const [activeService, setActiveService] = useState(0)
   const [activePricing, setActivePricing] = useState(0)
 
@@ -38,8 +39,7 @@ export const PricingClient = ({
         <h2 className="headline-h2 text-center">{heading}</h2>
 
         <div className="pricing-filters">
-
-            <span className="text-xl font-bold leading-7 text-dark">Wybierz typ usługi</span>
+          <span className="text-xl font-bold leading-7 text-dark">Wybierz typ usługi</span>
           <div className="pricing-buttons">
             {services.map((service, index) => (
               <button
@@ -89,7 +89,7 @@ export const PricingClient = ({
 
                   {typeof moreLink.page === 'object' && moreLink.page?.slug && (
                     <Link
-                      href={`/${moreLink.page.slug}`}
+                      href={`/${locale ?? 'pl'}/${moreLink.page.slug}`}
                       className="pricing-link"
                     >
                       {moreLink.label}
@@ -100,6 +100,7 @@ export const PricingClient = ({
                     <LinkButton
                       {...button[0]}
                       appearance={index === 0 ? 'primary' : 'secondary'}
+                      locale={locale}
                     />
                   )}
                 </article>

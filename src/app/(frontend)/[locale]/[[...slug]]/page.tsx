@@ -23,5 +23,11 @@ export default async function Page({ params }) {
   const page = await resolvePage(locale, slug?.length ? slug.join('/') : null)
   if (!page) notFound()
 
-  return <RenderBlocks blocks={page.layout as never} components={blockRegistry} />
+  return (
+  <RenderBlocks
+    blocks={page.layout as never}
+    components={blockRegistry}
+    enhanceProps={() => ({ locale })}
+  />
+)
 }

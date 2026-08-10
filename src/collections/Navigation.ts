@@ -56,9 +56,9 @@ export const Navigation: CollectionConfig = {
           name: 'label',
           label: 'Label',
           type: 'text',
+          localized: true,
           admin: {
-            description:
-              'Optional. If empty, the selected page title will be used.',
+            description: 'Optional. If empty, the selected page title will be used.',
           },
         },
       ],

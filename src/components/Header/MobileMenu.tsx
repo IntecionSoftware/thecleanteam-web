@@ -12,11 +12,13 @@ import type {
 type Props = {
   navigation: Navigation | null
   button: Header['button']
+  locale: string
 }
 
 export const MobileMenu = ({
   navigation,
   button,
+  locale
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -85,8 +87,8 @@ export const MobileMenu = ({
                 : null
 
             const href = page?.slug
-              ? `/${page.slug}${item.anchor ?? ''}`
-              : item.anchor ?? '#'
+  ? `/${locale}/${page.slug}${item.anchor ?? ''}`
+  : item.anchor ?? '#'
 
             return (
               <li key={item.id}>
@@ -103,7 +105,7 @@ export const MobileMenu = ({
 
         {button?.[0] && (
           <div className="mobile-menu-cta">
-            <LinkButton {...button[0]} />
+            <LinkButton {...button[0]} locale={locale} />
           </div>
         )}
       </nav>

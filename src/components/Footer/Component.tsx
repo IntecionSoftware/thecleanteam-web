@@ -9,9 +9,10 @@ type Props = {
   footer: FooterType
   settings: SiteSetting
   company: Company
+  locale: string
 }
 
-export const Footer = ({ footer, settings, company }: Props) => {
+export const Footer = ({ footer, settings, company, locale }: Props) => {
   const navigation =
     typeof footer.navigation === 'object' ? (footer.navigation as Navigation) : null
 
@@ -88,7 +89,7 @@ export const Footer = ({ footer, settings, company }: Props) => {
 
             {privacyPage && (
               <li>
-                <Link href={`/${privacyPage.slug}`}>Polityka prywatności</Link>
+                <Link href={`/${locale}/${privacyPage.slug}`}>Polityka prywatności</Link>
               </li>
             )}
           </ul>
@@ -103,7 +104,9 @@ export const Footer = ({ footer, settings, company }: Props) => {
             {navigation?.items?.map((item) => {
               const page = typeof item.page === 'object' ? (item.page as Page) : null
 
-              const href = page?.slug ? `/${page.slug}${item.anchor ?? ''}` : (item.anchor ?? '#')
+              const href = page?.slug
+                ? `/${locale}/${page.slug}${item.anchor ?? ''}`
+                : (item.anchor ?? '#')
 
               return (
                 <li key={item.id}>

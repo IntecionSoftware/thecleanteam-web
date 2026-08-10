@@ -22,9 +22,10 @@ export const getCompany = cache(async () =>
   }),
 )
 
-export const getHeader = cache(async () =>
+export const getHeader = cache(async (locale: string) =>
   (await getCachedPayload()).findGlobal({
     slug: 'header',
+    locale: locale as 'pl' | 'en',
     depth: 2,
   }),
 )
@@ -36,9 +37,10 @@ export const getContact = cache(async () =>
   }),
 )
 
-export const getFooter = cache(async () =>
+export const getFooter = cache(async (locale: string) =>
   (await getCachedPayload()).findGlobal({
     slug: 'footer',
+    locale: locale as 'pl' | 'en',
     depth: 2,
   }),
 )

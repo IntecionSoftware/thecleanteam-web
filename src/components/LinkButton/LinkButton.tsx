@@ -9,12 +9,13 @@ type Props = {
   linkType: 'page' | 'anchor'
 
   page?: number | Page | null
-
   anchor?: string | null
   newTab?: boolean | null
 
   showIcon?: boolean | null
   icon?: number | IconType | null
+
+  locale?: string
 }
 
 export const LinkButton = ({
@@ -26,11 +27,12 @@ export const LinkButton = ({
   newTab,
   showIcon,
   icon,
+  locale,
 }: Props) => {
   const href =
     linkType === 'page'
       ? typeof page === 'object' && page?.slug
-        ? `/${page.slug}`
+        ? `/${locale ?? 'pl'}/${page.slug}`
         : '#'
       : anchor || '#'
 
@@ -43,7 +45,7 @@ export const LinkButton = ({
       target={newTab ? '_blank' : undefined}
       rel={newTab ? 'noopener noreferrer' : undefined}
     >
-      <span>{label}</span>
+      {label}
 
       {showIcon && resolvedIcon && <Icon icon={resolvedIcon} />}
     </Link>

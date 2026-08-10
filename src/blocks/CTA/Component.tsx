@@ -4,12 +4,14 @@ type Props = {
   heading: string
   description?: string
   button?: any[]
+  locale?: string
 }
 
 export const CTA = ({
   heading,
   description,
   button,
+  locale
 }: Props) => {
   return (
     <section id="cta" className="bg-light">
@@ -26,7 +28,7 @@ export const CTA = ({
 
         {button?.[0] && (
           <div className="mt-10">
-            <LinkButton {...button[0]} />
+            <LinkButton {...button[0]} locale={locale} />
           </div>
         )}
       </div>

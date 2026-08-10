@@ -4,9 +4,10 @@ import Image from 'next/image'
 type Props = {
   heading: string
   cards?: any[]
+  locale?: string
 }
 
-export const Offer = ({ heading, cards = [] }: Props) => {
+export const Offer = ({ heading, cards = [], locale }: Props) => {
   const mode = cards.length === 2 || cards.length === 4 || cards.length === 7 ? 'four' : 'three'
 
   return (
@@ -32,7 +33,7 @@ export const Offer = ({ heading, cards = [] }: Props) => {
 
               <p className="body-lg w-4/5">{card.description}</p>
 
-              {card.button?.[0] && <LinkButton {...card.button[0]} />}
+              {card.button?.[0] && <LinkButton {...card.button[0]} locale={locale} />}
             </article>
           ))}
         </div>

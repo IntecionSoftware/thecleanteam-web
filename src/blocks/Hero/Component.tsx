@@ -9,9 +9,10 @@ type Props = {
     alt?: string
   }
   buttons?: any[]
+  locale?: string
 }
 
-export const Hero = ({ heading, description, image, buttons }: Props) => {
+export const Hero = ({ heading, description, image, buttons, locale }: Props) => {
   console.log('HERO IMAGE:', image)
   return (
     <section id="hero" className="bg-light">
@@ -30,7 +31,7 @@ export const Hero = ({ heading, description, image, buttons }: Props) => {
           {!!buttons?.length && (
             <div className="mt-2 flex flex-col gap-2 lg:flex-row">
               {buttons.map((button, index) => (
-                <LinkButton key={index} {...button} />
+                <LinkButton key={index} {...button} locale={locale} />
               ))}
             </div>
           )}

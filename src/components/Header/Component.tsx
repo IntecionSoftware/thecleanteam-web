@@ -12,7 +12,7 @@ type Props = {
   locale: string
 }
 
-export const Header = ({ header, settings }: Props) => {
+export const Header = ({ header, settings, locale }: Props) => {
   const navigation =
     typeof header.navigation === 'object' ? (header.navigation as Navigation) : null
 
@@ -21,7 +21,7 @@ export const Header = ({ header, settings }: Props) => {
       <div className="container flex h-24 items-center">
         {/* Logo */}
 
-        <Link href="/" className="header-logo shrink-0" aria-label={settings.siteName}>
+        <Link href={`/${locale}`} className="header-logo shrink-0" aria-label={settings.siteName}>
           {typeof settings.logo === 'object' && settings.logo?.url && (
             <Image
               src={settings.logo.url}
@@ -39,7 +39,9 @@ export const Header = ({ header, settings }: Props) => {
             {navigation?.items?.map((item) => {
               const page = typeof item.page === 'object' ? (item.page as Page) : null
 
-              const href = page?.slug ? `/${page.slug}${item.anchor ?? ''}` : (item.anchor ?? '#')
+              const href = page?.slug
+                ? `/${locale}/${page.slug}${item.anchor ?? ''}`
+                : (item.anchor ?? '#')
 
               return (
                 <li key={item.id}>
@@ -52,11 +54,19 @@ export const Header = ({ header, settings }: Props) => {
 
         <div className="header-cta">
           {header.button?.[0] && (
-            <LinkButton {...header.button[0]} icon={header.button[0].icon as Icon} />
+            <LinkButton
+              {...header.button[0]}
+              icon={header.button[0].icon as Icon}
+              locale={locale}
+            />
           )}
         </div>
 
-        <MobileMenu navigation={navigation} button={header.button} />
+        <MobileMenu
+  navigation={navigation}
+  button={header.button}
+  locale={locale}
+/>
       </div>
     </header>
   )
