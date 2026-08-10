@@ -11,6 +11,7 @@ import { Contact } from '@/blocks/Contact'
 import { SimpleHero } from '@/blocks/SimpleHero'
 import { FullContent } from '@/blocks/FullContent'
 import { Gallery } from '@/blocks/Gallery'
+import { FreeQuote } from '@/blocks/FreeQuote'
 
 
 export const blockRegistry: BlockComponentMap = {
@@ -24,4 +25,5 @@ export const blockRegistry: BlockComponentMap = {
   simpleHero: SimpleHero,
   fullContent: FullContent,
   gallery: Gallery,
+  freeQuote: FreeQuote,
 }

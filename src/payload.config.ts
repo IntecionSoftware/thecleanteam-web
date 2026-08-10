@@ -21,6 +21,7 @@ import { Contact } from '@/globals/Contact'
 import { Navigation } from '@/collections/Navigation'
 import { Header } from '@/globals/Header'
 import { Footer } from '@/globals/Footer'
+import { FreeQuote } from '@/globals/FreeQuote'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -33,7 +34,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Icons, Pages, Navigation],
-  globals: [Pricing, Company, Contact, Header, Footer],
+  globals: [Pricing, Company, Contact, Header, Footer, FreeQuote],
   email: panelSmtpAdapter(),
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

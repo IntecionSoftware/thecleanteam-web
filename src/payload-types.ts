@@ -103,6 +103,7 @@ export interface Config {
     contact: Contact;
     header: Header;
     footer: Footer;
+    freeQuote: FreeQuote1;
     'site-settings': SiteSetting;
     'site-integrations': SiteIntegration;
     'cookie-settings': CookieSetting;
@@ -113,6 +114,7 @@ export interface Config {
     contact: ContactSelect<false> | ContactSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    freeQuote: FreeQuoteSelect1<false> | FreeQuoteSelect1<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'site-integrations': SiteIntegrationsSelect<false> | SiteIntegrationsSelect<true>;
     'cookie-settings': CookieSettingsSelect<false> | CookieSettingsSelect<true>;
@@ -359,6 +361,7 @@ export interface Page {
         | SimpleHero
         | FullContent
         | Gallery
+        | FreeQuote
       )[]
     | null;
   meta?: {
@@ -406,6 +409,25 @@ export interface FullContent {
     };
     [k: string]: unknown;
   };
+  addButton?: boolean | null;
+  button?: {
+    link?:
+      | {
+          label: string;
+          appearance: 'primary' | 'secondary';
+          linkType: 'page' | 'anchor';
+          page?: (number | null) | Page;
+          /**
+           * Example: #services
+           */
+          anchor?: string | null;
+          newTab?: boolean | null;
+          showIcon?: boolean | null;
+          icon?: (number | null) | Icon;
+          id?: string | null;
+        }[]
+      | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'fullContent';
@@ -420,6 +442,15 @@ export interface Gallery {
   id?: string | null;
   blockName?: string | null;
   blockType: 'gallery';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FreeQuote".
+ */
+export interface FreeQuote {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'freeQuote';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -916,6 +947,7 @@ export interface PagesSelect<T extends boolean = true> {
         simpleHero?: T | SimpleHeroSelect<T>;
         fullContent?: T | FullContentSelect<T>;
         gallery?: T | GallerySelect<T>;
+        freeQuote?: T | FreeQuoteSelect<T>;
       };
   meta?:
     | T
@@ -943,6 +975,24 @@ export interface SimpleHeroSelect<T extends boolean = true> {
  */
 export interface FullContentSelect<T extends boolean = true> {
   content?: T;
+  addButton?: T;
+  button?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              label?: T;
+              appearance?: T;
+              linkType?: T;
+              page?: T;
+              anchor?: T;
+              newTab?: T;
+              showIcon?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
   id?: T;
   blockName?: T;
 }
@@ -953,6 +1003,14 @@ export interface FullContentSelect<T extends boolean = true> {
 export interface GallerySelect<T extends boolean = true> {
   heading?: T;
   images?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FreeQuote_select".
+ */
+export interface FreeQuoteSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }
@@ -1292,6 +1350,31 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "freeQuote".
+ */
+export interface FreeQuote1 {
+  id: number;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  form: number | Form;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
 export interface SiteSetting {
@@ -1575,6 +1658,17 @@ export interface HeaderSelect<T extends boolean = true> {
 export interface FooterSelect<T extends boolean = true> {
   navigation?: T;
   contactDetails?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "freeQuote_select".
+ */
+export interface FreeQuoteSelect1<T extends boolean = true> {
+  content?: T;
+  form?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
