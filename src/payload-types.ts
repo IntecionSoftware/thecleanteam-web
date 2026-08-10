@@ -358,6 +358,7 @@ export interface Page {
           }
         | SimpleHero
         | FullContent
+        | Gallery
       )[]
     | null;
   meta?: {
@@ -408,6 +409,17 @@ export interface FullContent {
   id?: string | null;
   blockName?: string | null;
   blockType: 'fullContent';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Gallery".
+ */
+export interface Gallery {
+  heading: string;
+  images: (number | Media)[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gallery';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -903,6 +915,7 @@ export interface PagesSelect<T extends boolean = true> {
             };
         simpleHero?: T | SimpleHeroSelect<T>;
         fullContent?: T | FullContentSelect<T>;
+        gallery?: T | GallerySelect<T>;
       };
   meta?:
     | T
@@ -930,6 +943,16 @@ export interface SimpleHeroSelect<T extends boolean = true> {
  */
 export interface FullContentSelect<T extends boolean = true> {
   content?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Gallery_select".
+ */
+export interface GallerySelect<T extends boolean = true> {
+  heading?: T;
+  images?: T;
   id?: T;
   blockName?: T;
 }

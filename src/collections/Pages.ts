@@ -11,6 +11,7 @@ import { AboutBlock } from '@/blocks/About'
 import { ContactBlock } from '@/blocks/Contact'
 import { SimpleHeroBlock } from '@/blocks/SimpleHero'
 import { FullContentBlock } from '@/blocks/FullContent'
+import { GalleryBlock } from '@/blocks/Gallery'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -40,6 +41,7 @@ export const Pages: CollectionConfig = {
         ContactBlock,
         SimpleHeroBlock,
         FullContentBlock,
+        GalleryBlock,
       ],
     },
   ],

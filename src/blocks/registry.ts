@@ -10,6 +10,7 @@ import { About } from '@/blocks/About'
 import { Contact } from '@/blocks/Contact'
 import { SimpleHero } from '@/blocks/SimpleHero'
 import { FullContent } from '@/blocks/FullContent'
+import { Gallery } from '@/blocks/Gallery'
 
 
 export const blockRegistry: BlockComponentMap = {
@@ -22,4 +23,5 @@ export const blockRegistry: BlockComponentMap = {
   contact: Contact,
   simpleHero: SimpleHero,
   fullContent: FullContent,
+  gallery: Gallery,
 }
