@@ -30,8 +30,7 @@
 html {
   font-size: 18px;
   line-height: 32px;
-
-  background: rgb(0, 0, 0);
+  background: var(--bg-white);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -52,6 +51,11 @@ body {
     font-size: 15px;
     line-height: 24px;
   }
+}
+
+button,
+a {
+  cursor: pointer;
 }
 
 main {

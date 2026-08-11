@@ -1,18 +1,52 @@
 // src/app/(frontend)/[locale]/layout.tsx
 
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 
 import { getAnalyticsConfig, getConsentTexts } from '@intecion/ipal-kit'
-import { Analytics, ConsentProvider, CookieBanner, CookieButton } from '@intecion/ipal-kit/client'
+import {
+  Analytics,
+  ConsentProvider,
+  CookieBanner,
+  CookieButton,
+} from '@intecion/ipal-kit/client'
 
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { libreFranklin, signika } from '@/fonts'
 import { i18nConfig } from '@/i18n.config'
 import { getConfiguredLocales } from '@/lib/locales'
-import { getCachedPayload, getCompany, getFooter, getHeader, getSettings } from '@/lib/payload'
+import {
+  getCachedPayload,
+  getCompany,
+  getFooter,
+  getHeader,
+  getSettings,
+} from '@/lib/payload'
 
 import '../styles.css'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const settings = await getSettings(locale)
+
+  const favicon =
+    settings.favicon && typeof settings.favicon === 'object'
+      ? settings.favicon
+      : null
+
+  return {
+    icons: favicon?.url
+      ? {
+          icon: favicon.url,
+        }
+      : undefined,
+  }
+}
 
 export default async function LocaleLayout({
   children,
@@ -60,23 +94,35 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${libreFranklin.variable} ${signika.variable}`}>
         <ConsentProvider texts={texts}>
-          <Header header={header} settings={settings} locale={locale} company={company} />
+          <Header
+            header={header}
+            settings={settings}
+            locale={locale}
+            company={company}
+          />
 
           <main>{children}</main>
 
-          <Footer footer={footer} settings={settings} locale={locale} company={company} />
+          <Footer
+            footer={footer}
+            settings={settings}
+            locale={locale}
+            company={company}
+          />
 
           <CookieBanner
             classNames={{
-              root: 'fixed inset-x-0 bottom-0 z-50 border-t border-black/10 bg-light px-6 py-5 gap-10',
+              root:
+                'fixed inset-x-0 bottom-0 z-50 border-t border-black/10 bg-light px-6 py-5 gap-10',
               primaryButton: 'button-primary',
               secondaryButton: 'button-secondary',
             }}
           />
 
           <CookieButton
-  className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-md transition-transform duration-300 hover:scale-105 [&_svg]:text-white"
-/>
+            className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-md transition-transform duration-300 hover:scale-105 [&_svg]:text-white"
+          />
+
           <Analytics {...analytics} />
         </ConsentProvider>
       </body>

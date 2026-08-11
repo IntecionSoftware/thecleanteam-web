@@ -75,7 +75,7 @@ export const MobileMenu = ({
         className={`mobile-menu ${isOpen ? 'active' : ''}`}
         aria-label="Menu mobilne"
       >
-        <span className="text-2xl font-bold text-dark">
+        <span className="text-2xl text-center font-bold text-dark">
           Menu
         </span>
 
