@@ -1,9 +1,10 @@
 /* src/app/(frontend)/styles.css — na górze */
 @import 'tailwindcss';
 @import 'glightbox/dist/css/glightbox.css';
-@source "../../../node_modules/ipal-kit/dist/**/*.js";
+@source "../../../node_modules/@intecion/ipal-kit/dist/**/*.js";
 
 @theme {
+  
   /* Kolory */
 
   --color-white: #ffffff;
@@ -17,10 +18,9 @@
 
   --font-heading: 'Signika', sans-serif;
   --font-body: 'Libre Franklin', sans-serif;
-}
 
-:root {
-  --font-mono: 'Roboto Mono', monospace;
+  /* Wymiary */
+  --header-height: 110px;
 }
 
 * {
@@ -36,8 +36,7 @@ html {
 }
 
 html,
-body,
-#app {
+body {
   height: 100%;
 }
 
@@ -47,7 +46,7 @@ body {
   line-height: 32px;
 
   margin: 0;
-  color: rgb(1000, 1000, 1000);
+  color: var(--color-dark);
 
   @media (max-width: 1024px) {
     font-size: 15px;
@@ -56,7 +55,7 @@ body {
 }
 
 main {
-    @apply mt-[110px];
+    @apply mt-[var(--header-height)];
   }
 
 @layer components {
@@ -161,7 +160,7 @@ main {
   /* Header */
 
   header {
-    @apply  h-[110px] fixed top-0 left-0 flex items-center z-50 w-full bg-white shadow-xs;
+    @apply h-[var(--header-height)] fixed top-0 left-0 flex items-center z-50 w-full bg-white shadow-xs;
   }
 
   .header-logo img {
@@ -170,10 +169,6 @@ main {
 
   .header-menu {
     @apply flex items-center gap-10;
-  }
-
-  .sr-only {
-    @apply text-2xl font-bold text-dark;
   }
 
   .header-menu a {
@@ -269,10 +264,6 @@ main {
     @apply flex flex-col gap-8 lg:max-w-2xl;
   }
 
-  .hero-grid .body-lg {
-    @apply max-w-xl;
-  }
-
   .hero-grid .button-primary,
   .hero-grid .button-secondary {
     @apply w-full justify-center lg:w-auto;
@@ -364,14 +355,6 @@ main {
 
   .pricing-content {
     @apply mt-12;
-  }
-
-  .pricing-panel {
-    @apply hidden;
-  }
-
-  .pricing-panel.active {
-    @apply block;
   }
 
   .pricing-grid {
@@ -667,6 +650,36 @@ main {
 
   .footer-bottom p {
     @apply text-center text-sm text-white lg:text-left;
+  }
+}
+
+/* Cookie banner */
+
+[data-ipal='banner'] p {
+  color: #000;
+}
+
+[data-ipal='banner'] > div > div {
+  gap: 5rem;
+}
+
+[data-ipal='banner'] > div {
+  width: 100%;
+  max-width: 1536px;
+}
+
+@media (max-width: 1023px) {
+  [data-ipal='banner'] > div > div > div:last-child {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  [data-ipal='banner'] > div > div {
+  gap: 1.5rem;
+}
+
+  [data-ipal='banner'] > div > div > div:last-child button {
+    width: 100%;
   }
 }
 

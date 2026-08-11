@@ -12,7 +12,7 @@ import { ContactBlock } from '@/blocks/Contact'
 import { SimpleHeroBlock } from '@/blocks/SimpleHero'
 import { FullContentBlock } from '@/blocks/FullContent'
 import { GalleryBlock } from '@/blocks/Gallery'
-import { FreeQuoteBlock } from '@/blocks/FreeQuote'
+import { FreeQuoteBlock } from '@/blocks/FreeQuote/config'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
